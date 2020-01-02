@@ -16,7 +16,11 @@
 extern "C" {
 #endif
 
+void EXTERNAL_IRQ_0_example(void);
+
 void delay_example(void);
+
+void TIMER_0_example(void);
 
 void SPI_5_example(void);
 

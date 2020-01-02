@@ -65,7 +65,7 @@
 // <e> Advanced Configuration
 // <id> spi_master_advanced
 #ifndef CONF_SPI_5_ADVANCED
-#define CONF_SPI_5_ADVANCED 0
+#define CONF_SPI_5_ADVANCED 1
 #endif
 
 // <o> Dummy byte <0x00-0xFFFF>

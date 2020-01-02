@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: ASF4ProjectNo.4
+ * Project: ASF4ProjectNo.6
  * Target:  ATSAMG55J19 
  *
  **/

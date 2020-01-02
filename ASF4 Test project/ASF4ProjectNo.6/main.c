@@ -1,6 +1,7 @@
 #include <atmel_start.h>
 #include <stdlib.h>
 #include "Invn/Drivers/Icm426xx/Icm426xxDriver_HL.h"
+#include "hri_tc_g55.h"
 
 typedef int (*read_reg_t)(struct inv_icm426xx_serif *, uint8_t, uint8_t *, uint32_t);
 typedef int (*write_reg_t)(struct inv_icm426xx_serif *, uint8_t, uint8_t const *, uint32_t);
@@ -19,9 +20,7 @@ void inv_icm426xx_sleep_us(uint32_t us)
  */
 uint64_t inv_icm426xx_get_time_us(void)
 {
-	/* it wants to know the time to see if it's been long enough => make it long enough and then lie */
-	delay_ms(500);
-	return ((uint64_t)-1);
+	return TIMER_0.time*(uint64_t)1000;
 }
 
 int read_reg_1(struct inv_icm426xx_serif * serif, uint8_t reg, uint8_t * buf, uint32_t len)
@@ -212,7 +211,7 @@ void testReadWrite(read_reg_t read_fn, write_reg_t write_fn)
 	
 	beesert(status==0);
 }
-
+uint64_t currentTime;
 int main(void)
 {
 	// I have to malloc b/c for some reason the compiler keeps putting this on top of SPI_5 which corrupts it... 
@@ -226,16 +225,21 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
-	//testReadWrite(read_reg_2,write_reg_2);
+	testReadWrite(read_reg_2,write_reg_2);
 	//testReadWrite(read_reg_1,write_reg_1);
+	
+	timer_start(&TIMER_0);
 	
 	/* sets up InvenSense structure and chip */
 	setupInvensense(sensor);
 	
+	currentTime = inv_icm426xx_get_time_us();
+	delay_ms(1000);
+	currentTime = inv_icm426xx_get_time_us() - currentTime;
 	
 	/* Replace with your application code */
 	while (1) {
-		delay_ms(100);
+		delay_ms(500);
 		//uint32_t retval = inv_icm426xx_get_data_from_fifo(sensor);
 		inv_icm426xx_get_data_from_registers(sensor);
 	}

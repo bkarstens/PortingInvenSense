@@ -11,12 +11,42 @@
 #include <hpl_pmc.h>
 #include <peripheral_clk_config.h>
 #include <utils.h>
+#include <hpl_tc.h>
 
+struct timer_descriptor      TIMER_0;
 struct spi_m_sync_descriptor SPI_5;
+
+void EXTERNAL_IRQ_0_init(void)
+{
+
+	// Set pin direction to input
+	gpio_set_pin_direction(INT1, GPIO_DIRECTION_IN);
+
+	gpio_set_pin_pull_mode(INT1,
+	                       // <y> Pull configuration
+	                       // <id> pad_pull_config
+	                       // <GPIO_PULL_OFF"> Off
+	                       // <GPIO_PULL_UP"> Pull-up
+	                       // <GPIO_PULL_DOWN"> Pull-down
+	                       GPIO_PULL_OFF);
+
+	gpio_set_pin_function(INT1, GPIO_PIN_FUNCTION_OFF);
+}
 
 void delay_driver_init(void)
 {
 	delay_init(SysTick);
+}
+
+/**
+ * \brief Timer initialization function
+ *
+ * Enables Timer peripheral, clocks and initializes Timer driver
+ */
+static void TIMER_0_init(void)
+{
+	_pmc_enable_periph_clock(ID_TC0_CHANNEL0);
+	timer_init(&TIMER_0, TC0, _tc_get_timer());
 }
 
 void SPI_5_PORT_init(void)
@@ -48,6 +78,8 @@ void system_init(void)
 
 	_pmc_enable_periph_clock(ID_PIOA);
 
+	_pmc_enable_periph_clock(ID_PIOB);
+
 	/* Disable Watchdog */
 	hri_wdt_set_MR_WDDIS_bit(WDT);
 
@@ -65,7 +97,12 @@ void system_init(void)
 
 	gpio_set_pin_function(SN_CS, GPIO_PIN_FUNCTION_OFF);
 
+	EXTERNAL_IRQ_0_init();
+
 	delay_driver_init();
+	TIMER_0_init();
 
 	SPI_5_init();
+
+	ext_irq_init();
 }

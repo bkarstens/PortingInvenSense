@@ -40,6 +40,22 @@
  */
 #define CONF_MCK_FREQUENCY 8000000
 
+// <y> TC Clock Source
+// <CONF_SRC_MCK"> Master Clock (MCK)
+// <id> tc_clock_source
+// <i> Select the clock source for TC.
+#ifndef CONF_TC0_SRC
+#define CONF_TC0_SRC CONF_SRC_MCK
+#endif
+
+/**
+ * \def CONF_TC0_FREQUENCY
+ * \brief TC0's Clock frequency
+ */
+#ifndef CONF_TC0_FREQUENCY
+#define CONF_TC0_FREQUENCY 8000000
+#endif
+
 // <h> FLEXCOM Clock Settings
 // <o> FLEXCOM Clock source
 // <0=> Master Clock (MCK)

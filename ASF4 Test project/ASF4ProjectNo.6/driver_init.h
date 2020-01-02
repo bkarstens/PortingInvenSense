@@ -21,9 +21,13 @@ extern "C" {
 #include <hal_io.h>
 #include <hal_sleep.h>
 
+#include <hal_ext_irq.h>
+
 #include <hal_delay.h>
+#include <hal_timer.h>
 #include <hal_spi_m_sync.h>
 
+extern struct timer_descriptor      TIMER_0;
 extern struct spi_m_sync_descriptor SPI_5;
 
 void delay_driver_init(void);

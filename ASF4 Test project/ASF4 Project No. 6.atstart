@@ -27,6 +27,87 @@ drivers:
     variant: null
     clocks:
       domain_group: null
+  EXTERNAL_IRQ_0:
+    user_label: EXTERNAL_IRQ_0
+    definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::PIOB::driver_config_definition::External.IRQ::HAL:Driver:Ext.IRQ
+    functionality: External_IRQ
+    api: HAL:Driver:Ext_IRQ
+    configuration:
+      gpio_ext_irq_sense0: Any change detection
+      gpio_ext_irq_sense1: Any change detection
+      gpio_ext_irq_sense10: Any change detection
+      gpio_ext_irq_sense11: Any change detection
+      gpio_ext_irq_sense12: Any change detection
+      gpio_ext_irq_sense13: Any change detection
+      gpio_ext_irq_sense14: Any change detection
+      gpio_ext_irq_sense15: Any change detection
+      gpio_ext_irq_sense16: Any change detection
+      gpio_ext_irq_sense17: Any change detection
+      gpio_ext_irq_sense18: Any change detection
+      gpio_ext_irq_sense19: Any change detection
+      gpio_ext_irq_sense2: Any change detection
+      gpio_ext_irq_sense20: Any change detection
+      gpio_ext_irq_sense21: Any change detection
+      gpio_ext_irq_sense22: Any change detection
+      gpio_ext_irq_sense23: Any change detection
+      gpio_ext_irq_sense24: Any change detection
+      gpio_ext_irq_sense25: Any change detection
+      gpio_ext_irq_sense26: Any change detection
+      gpio_ext_irq_sense27: Any change detection
+      gpio_ext_irq_sense28: Any change detection
+      gpio_ext_irq_sense29: Any change detection
+      gpio_ext_irq_sense3: Rising-edge detection
+      gpio_ext_irq_sense30: Any change detection
+      gpio_ext_irq_sense31: Any change detection
+      gpio_ext_irq_sense4: Any change detection
+      gpio_ext_irq_sense5: Any change detection
+      gpio_ext_irq_sense6: Any change detection
+      gpio_ext_irq_sense7: Any change detection
+      gpio_ext_irq_sense8: Any change detection
+      gpio_ext_irq_sense9: Any change detection
+      pio_ext_irq_enable_setting0: false
+      pio_ext_irq_enable_setting1: false
+      pio_ext_irq_enable_setting10: false
+      pio_ext_irq_enable_setting11: false
+      pio_ext_irq_enable_setting12: false
+      pio_ext_irq_enable_setting13: false
+      pio_ext_irq_enable_setting14: false
+      pio_ext_irq_enable_setting15: false
+      pio_ext_irq_enable_setting16: false
+      pio_ext_irq_enable_setting17: false
+      pio_ext_irq_enable_setting18: false
+      pio_ext_irq_enable_setting19: false
+      pio_ext_irq_enable_setting2: false
+      pio_ext_irq_enable_setting20: false
+      pio_ext_irq_enable_setting21: false
+      pio_ext_irq_enable_setting22: false
+      pio_ext_irq_enable_setting23: false
+      pio_ext_irq_enable_setting24: false
+      pio_ext_irq_enable_setting25: false
+      pio_ext_irq_enable_setting26: false
+      pio_ext_irq_enable_setting27: false
+      pio_ext_irq_enable_setting28: false
+      pio_ext_irq_enable_setting29: false
+      pio_ext_irq_enable_setting3: true
+      pio_ext_irq_enable_setting30: false
+      pio_ext_irq_enable_setting31: false
+      pio_ext_irq_enable_setting4: false
+      pio_ext_irq_enable_setting5: false
+      pio_ext_irq_enable_setting6: false
+      pio_ext_irq_enable_setting7: false
+      pio_ext_irq_enable_setting8: false
+      pio_ext_irq_enable_setting9: false
+    optional_signals:
+    - identifier: EXTERNAL_IRQ_0:P/35
+      pad: PB3
+      mode: Ext IRQ Enabled
+      configuration: null
+      definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::optional_signal_definition::PIOB.P.35
+      name: PIOB/P/35
+      label: P/35
+    variant: null
+    clocks:
+      domain_group: null
   PMC:
     user_label: PMC
     definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::PMC::driver_config_definition::PMC::HAL:HPL:PMC
@@ -146,20 +227,45 @@ drivers:
     variant: null
     clocks:
       domain_group: null
+  TIMER_0:
+    user_label: TIMER_0
+    definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::TC0::driver_config_definition::Timer::HAL:Driver:Timer
+    functionality: Timer
+    api: HAL:Driver:Timer
+    configuration:
+      timer_abetrg: TIOB is used as an external trigger
+      timer_div_clock: true
+      timer_etrgedg: The clock is not gated by an external signal
+      timer_event_output_wave: false
+      timer_external_trigger_enable: false
+      timer_prescaler: TIMER_CLOCK2 (MCK/8)
+      timer_ra_tick: 500
+      timer_tick: 1000
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          tc_clock_source: Master Clock (MCK)
   SPI_5:
     user_label: SPI_5
     definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::FLEXCOM5::driver_config_definition::SPI.Master::HAL:Driver:SPI.Master.Sync
     functionality: SPI
     api: HAL:Driver:SPI_Master_Sync
     configuration:
-      spi_master_advanced: false
+      spi_master_advanced: true
       spi_master_arch_cpha: Data is captured on the leading edge of SPCK and changed
         on the following edge of SPCK.
       spi_master_arch_cpol: The inactive state value of SPCK is logic level zero.
       spi_master_baud_rate: 6000000
       spi_master_character_size: 8 bits
-      spi_master_dlybct: 1000
-      spi_master_dlybs: 1000
+      spi_master_dlybct: 1
+      spi_master_dlybs: 64
       spi_master_dummybyte: 65535
     optional_signals: []
     variant:
@@ -191,6 +297,12 @@ pads:
     user_label: SN_CS
     configuration:
       pad_initial_level: High
+  INT1:
+    name: PB3
+    definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::pad::PB3
+    mode: Digital input
+    user_label: INT1
+    configuration: null
   PA14:
     name: PA14
     definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::pad::PA14
