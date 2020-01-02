@@ -219,6 +219,13 @@ drivers:
         configuration:
           flexcom_clock_source: Master Clock (MCK)
 pads:
+  SN_CS:
+    name: PA5
+    definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::pad::PA5
+    mode: Digital output
+    user_label: SN_CS
+    configuration:
+      pad_initial_level: High
   PB2:
     name: PB2
     definition: Atmel:SAMG55_Drivers:0.0.1::ATSAMG55J19A-AU::pad::PB2

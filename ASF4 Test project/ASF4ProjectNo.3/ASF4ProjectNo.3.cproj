@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>ASF4 Test Project No. 2</AssemblyName>
-    <Name>ASF4 Test Project No. 2</Name>
-    <RootNamespace>ASF4 Test Project No. 2</RootNamespace>
+    <AssemblyName>ASF4ProjectNo.3</AssemblyName>
+    <Name>ASF4ProjectNo.3</Name>
+    <RootNamespace>ASF4ProjectNo.3</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -123,9 +123,9 @@
           <AcmeProjectActionInfo Action="File" Source="hri/hri_usart_g55.h" IsConfig="false" Hash="6mEVoTGrKlNZrrXhfIQwdg" />
           <AcmeProjectActionInfo Action="File" Source="hri/hri_wdt_g55.h" IsConfig="false" Hash="PZh62gX9/LM+bXaz267waQ" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="BRf4rdsQm/epvT7SCvqIQw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="ies2cYBV5SZf6ucDt7NpEg" />
           <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="UXKDv1GE6ScyEIWJY/qrwg" />
-          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="FqmyUemK5rBWNyV0yqLWHw" />
+          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="vsiEhIhXuLrN4OvxL/Wb4g" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="TOkd+9x5YamV/+L5n5xA2A" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.c" IsConfig="false" Hash="wtwyANh1ECl8Intu/cQrEg" />
           <AcmeProjectActionInfo Action="File" Source="hal/include/hal_usart_sync.h" IsConfig="false" Hash="ZzIGSRyjZuxRzFAtNNt7sw" />
@@ -192,6 +192,7 @@
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>NDEBUG</Value>
+      <Value>ICM42605</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
