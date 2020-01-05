@@ -20,6 +20,7 @@ void inv_icm426xx_sleep_us(uint32_t us)
  */
 uint64_t inv_icm426xx_get_time_us(void)
 {
+	// in Config/hpl_tc_config.h timer is configured to tick every 1000us. Ticking every us bogs everything down.
 	return TIMER_0.time * (uint64_t)1000;
 }
 
@@ -56,8 +57,7 @@ int write_reg_1(struct inv_icm426xx_serif * serif, uint8_t reg, const uint8_t * 
 	ASSERT(serif->serif_type == ICM426XX_UI_SPI4);
 
 	spi_m_sync_enable(serif->context);               /* enable SPI communication                           */
-													 /* Write each byte separately                         */
-	for (uint8_t i = 0; i < len; ++i)
+	for (uint8_t i = 0; i < len; ++i)                /* Write each byte separately                         */
 	{
 		gpio_set_pin_level(SN_CS,false);             /* enable chip select (active low)                    */
 		uint8_t addr = (reg + i) & 0x7F;			 /* make sure the read flag is not set                 */
@@ -108,14 +108,15 @@ int read_reg_2(struct inv_icm426xx_serif * serif, uint8_t reg, uint8_t * buf, ui
 // }
 
 
-uint16_t acceldata[3];
+uint16_t accel_data[3];
 void filler_event_handler(inv_icm426xx_sensor_event_t * event)
 {
-	acceldata[0] = event->accel[0];
-	acceldata[1] = event->accel[1];
-	acceldata[2] = event->accel[2];
+	accel_data[0] = event->accel[0];
+	accel_data[1] = event->accel[1];
+	accel_data[2] = event->accel[2];
 }
 
+// copied from invensense/sources/examples/example-raw-data-registers/example-raw-data-registers.c
 static int ConfigureInvDevice(struct inv_icm426xx *p_sensor,
 	uint8_t is_low_noise_mode,
 	ICM426XX_ACCEL_CONFIG0_FS_SEL_t acc_fsr_g,
@@ -147,27 +148,24 @@ static int ConfigureInvDevice(struct inv_icm426xx *p_sensor,
 	return rc;
 }
 
-static void setupInvensense(struct inv_icm426xx * p_sensor)
+static void setup_invensense(struct inv_icm426xx * p_sensor)
 {
 	struct inv_icm426xx_serif icm_serif;
-	icm_serif.context   = &SPI_5; /*using context as the spi_m_sync_descriptor to use */
-	icm_serif.read_reg  = read_reg_2;
-	icm_serif.write_reg = write_reg_1;
-	icm_serif.max_read  = 1024*32;  /* maximum number of bytes allowed per serial read  (from InvenSense examples) */
-	icm_serif.max_write = 1024*32;  /* maximum number of bytes allowed per serial write (from InvenSense examples) */
+	icm_serif.context   = &SPI_5;      /* using context as the spi_m_sync_descriptor to use                           */
+	icm_serif.read_reg  = read_reg_2;  /* use the burst read fn                                                       */
+	icm_serif.write_reg = write_reg_1; /* use the for loop write fn b/c the burst write fn doesn't work               */
+	icm_serif.max_read  = 1024*32;     /* maximum number of bytes allowed per serial read  (from InvenSense examples) */
+	icm_serif.max_write = 1024*32;     /* maximum number of bytes allowed per serial write (from InvenSense examples) */
 	icm_serif.serif_type = ICM426XX_UI_SPI4;
 	int retval = inv_icm426xx_init(p_sensor,&icm_serif,filler_event_handler);
  	retval |= inv_icm426xx_configure_fifo(p_sensor, INV_ICM426XX_FIFO_DISABLED);
-	retval |= ConfigureInvDevice(p_sensor,(uint8_t )1,
-	                                  ICM426XX_ACCEL_CONFIG0_FS_SEL_4g,
-	                                  ICM426XX_GYRO_CONFIG0_FS_SEL_2000dps,
-	                                  ICM426XX_ACCEL_CONFIG0_ODR_1_KHZ,
-	                                  ICM426XX_GYRO_CONFIG0_ODR_1_KHZ,
-	                        (uint8_t )0);
-// 	retval |= inv_icm426xx_set_accel_frequency(p_sensor, ICM426XX_ACCEL_CONFIG0_ODR_1_KHZ);
-// 	retval |= inv_icm426xx_set_gyro_frequency(p_sensor,  ICM426XX_GYRO_CONFIG0_ODR_1_KHZ);
-// 	retval |= inv_icm426xx_enable_accel_low_noise_mode(p_sensor);
-// 	retval |= inv_icm426xx_enable_gyro_low_noise_mode(p_sensor);
+	retval |= ConfigureInvDevice(p_sensor,
+								 (uint8_t )1,
+	                             ICM426XX_ACCEL_CONFIG0_FS_SEL_4g,
+	                             ICM426XX_GYRO_CONFIG0_FS_SEL_2000dps,
+	                             ICM426XX_ACCEL_CONFIG0_ODR_1_KHZ,
+	                             ICM426XX_GYRO_CONFIG0_ODR_1_KHZ,
+								 (uint8_t )0);
 	ASSERT(retval==INV_ERROR_SUCCESS);
 }
 
@@ -180,7 +178,7 @@ void beesert(uint32_t condition)
 void testReadWrite(read_reg_t read_fn, write_reg_t write_fn)
 {
 	struct inv_icm426xx_serif icm_serif;
-	icm_serif.context   = &SPI_5; /*using context as the spi_m_sync_descriptor to use */
+	icm_serif.context   = &SPI_5;   /* using context as the spi_m_sync_descriptor to use */
 	icm_serif.read_reg  = read_fn;
 	icm_serif.write_reg = write_fn;
 	icm_serif.max_read  = 1024*32;  /* maximum number of bytes allowed per serial read  (from InvenSense examples) */
@@ -189,7 +187,7 @@ void testReadWrite(read_reg_t read_fn, write_reg_t write_fn)
 	uint8_t buf [3]= {0,0x42,0xFF};
 	uint32_t status = 0;
 	/************************************************************************/
-	/* Singe Read/Write                                                     */
+	/* Singe Read                                                           */
 	/************************************************************************/
 	status |= read_fn(&icm_serif,MPUREG_WHO_AM_I,buf,1);
 	beesert(buf[0]==0x42);
@@ -215,7 +213,7 @@ void testReadWrite(read_reg_t read_fn, write_reg_t write_fn)
 	
 	beesert(status==0);
 }
-uint64_t currentTime;
+uint64_t current_time;
 int main(void)
 {
 	// I have to malloc b/c for some reason the compiler keeps putting this on top of SPI_5 which corrupts it...
@@ -236,11 +234,12 @@ int main(void)
 	timer_start(&TIMER_0);
 	
 	/* sets up InvenSense structure and chip */
-	setupInvensense(sensor);
+	setup_invensense(sensor);
 	
-	currentTime = inv_icm426xx_get_time_us();
+	/* verifying time is correct */
+	current_time = inv_icm426xx_get_time_us();
 	delay_ms(1000);
-	currentTime = inv_icm426xx_get_time_us() - currentTime;
+	current_time = inv_icm426xx_get_time_us() - current_time;
 	
 	/* Replace with your application code */
 	while (1) {
