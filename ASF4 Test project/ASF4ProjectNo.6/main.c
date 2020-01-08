@@ -214,18 +214,11 @@ void testReadWrite(read_reg_t read_fn, write_reg_t write_fn)
 	beesert(status==0);
 }
 uint64_t current_time;
+
+static struct inv_icm426xx sensor;
+
 int main(void)
 {
-	// I have to malloc b/c for some reason the compiler keeps putting this on top of SPI_5 which corrupts it...
-	// maybe 2,176 Byte struct is too big for the stack?
-	//*
-	struct inv_icm426xx *sensor = malloc(sizeof(struct inv_icm426xx));
-	/*/
-	struct inv_icm426xx sensor_loc;
-	struct inv_icm426xx *sensor = &sensor_loc;
-	//*/
-	ASSERT(!((char*)sensor < (char*)&SPI_5 && (char*)&SPI_5 < ((char*)sensor + sizeof *sensor)));
-	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
@@ -234,7 +227,7 @@ int main(void)
 	timer_start(&TIMER_0);
 	
 	/* sets up InvenSense structure and chip */
-	setup_invensense(sensor);
+	setup_invensense(&sensor);
 	
 	/* verifying time is correct */
 	current_time = inv_icm426xx_get_time_us();
@@ -245,6 +238,6 @@ int main(void)
 	while (1) {
 		delay_ms(500);
 		//uint32_t retval = inv_icm426xx_get_data_from_fifo(sensor);
-		inv_icm426xx_get_data_from_registers(sensor);
+		inv_icm426xx_get_data_from_registers(&sensor);
 	}
 }
